@@ -1,11 +1,3 @@
-/**
-* Template Name: iPortfolio
-* Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
-* Updated: Jun 14 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
 (function() {
   "use strict";
 
@@ -256,5 +248,48 @@
       display.value += value;
     }
   }
+
+  /**
+   * Contact Form Submission
+   */
+  document.querySelector('.php-email-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    var form = event.target;
+    var data = new FormData(form);
+    var loading = form.querySelector('.loading');
+    var errorMessage = form.querySelector('.error-message');
+    var sentMessage = form.querySelector('.sent-message');
+
+    loading.style.display = 'block';
+    errorMessage.style.display = 'none';
+    sentMessage.style.display = 'none';
+
+    fetch(form.action, {
+      method: form.method,
+      body: data,
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      loading.style.display = 'none';
+      console.log(response);  // Log the raw response
+      return response.json();
+    }).then(data => {
+      console.log(data);  // Log the parsed response data
+      if (data.ok) {
+        sentMessage.style.display = 'block';
+        form.reset();
+      } else {
+        errorMessage.textContent = 'Oops! There was a problem submitting your form';
+        errorMessage.style.display = 'block';
+      }
+    }).catch(error => {
+      console.error('Error:', error);  // Log any errors encountered
+      loading.style.display = 'none';
+      errorMessage.textContent = 'Oops! There was a problem submitting your form';
+      errorMessage.style.display = 'block';
+    });
+  });
 
 })();
